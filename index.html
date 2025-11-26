@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CICADA GAME</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <nav class="menu">
+        <ul class="sub-menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="pages-winner/regles.html">Rule of Game</a></li>
+            <li><a href="pages-winner/lexique.html">Glossary</a></li>
+        </ul>
+    </nav>
+    <h1 class="title">Welcome in CICADA GAME</h1>
+    <p> <span class="tooltip">Don't forget
+            <span class="tooltiptext">Nobody is fully secure, so remain vigilant at all time and take appropriate action
+                for more information click here. <a href="https://www.cybermalveillance.gouv.fr/"></a>
+            </span>
+        </span></p>
+    <p id="scan-text">scan or write your winning code and enjoy</p>
+    <div id="reader">
+        <video id="preview"></video>
+
+        <div id="result"></div>
+        <div id="laser"></div>
+    </div>
+    <div id="manual-input">
+        <input type="text" id="code-input" placeholder="Enter your code here">
+        <button id="submit-code">submit</button>
+    </div>
+    <script type="module">
+        import QrScanner from "./qr-scanner.min.js";
+        const video = document.getElementById("preview");
+        const scanner = new QrScanner(video, result =>
+            alert("Code scanned: " + result),
+            {
+                HighlightScanRegion: false,
+                HighlightCodeOutline: false,
+                Worker: './qr-scanner-worker.min.js'
+            }
+        );
+        scanner.start().catch(e =>
+            console.error("erreur camera", e)
+        );
+    </script>
+    <script>
+        const pages = {
+            "WINNER1": "pages-winner/winner1.html",
+            "WINNER2": "pages-winner/winner2.html",
+            "WINNER3": "pages-winner/winner3.html",
+            "WINNER4": "pages-winner/winner4.html",
+            "WINNER5": "pages-winner/winner5.html",
+            "WINNER6": "pages-winner/winner6.html",
+            "WINNER7": "pages-winner/winner7.html",
+            "WINNER8": "pages-winner/winner8.html",
+            "WINNER9": "pages-winner/winner9.html",
+            "WINNER10": "pages-winner/winner10.html",
+            "WINNER11": "pages-winner/winner11.html",
+            "WINNER12": "pages-winner/winner12.html",
+            "WINNER13": "pages-winner/winner13.html",
+            "WINNER14": "pages-winner/winner14.html",
+            "WINNER15": "pages-winner/winner15.html"
+        };
+        function redirectToPage(code) {
+            code = code.trim().toUpperCase();
+            if (pages[code]) {
+                window.location.href = pages[code];
+            } else {
+                alert("Invalid code. Please try again.");
+            }
+        }
+        const container = document.getElementById("qrcontainer");
+        Object.keys(pages).forEach(code => {
+            const div = document.createElement("div");
+            div.className = "qr-item";
+            new QrCode(div, {
+                text: code,
+                width: 150,
+                height: 150,
+                correctLevel: QrCode.CorrectLevel
+            });
+            const p =
+                document.createElement("p");
+            p.textContent = `code:${code}`
+            div.appendChild(p);
+            container.appendChild(div);
+        })
+
+        document.getElementById("submit-code").addEventListener("click", function () {
+            const code = document.getElementById("code-input").value.trim();
+            if (code) {
+                alert("Code submitted: " + code);
+            } else {
+                alert("Please enter a code.");
+            }
+        });
+    </script>
+</body>
+
+</html>
