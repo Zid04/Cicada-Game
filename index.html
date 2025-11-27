@@ -103,10 +103,21 @@
                         return false;
                     }
 
-                    const stream = await navigator.mediaDevices.getUserMedia({
-                        video: { facingMode: 'environment' }
-                    });
+                    // Try multiple video constraints for better compatibility
+                    let stream;
+                    try {
+                        stream = await navigator.mediaDevices.getUserMedia({
+                            video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
+                        });
+                    } catch (e) {
+                        console.warn('Environment camera failed, trying generic');
+                        stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    }
+
+                    console.log('Camera stream obtained');
                     video.srcObject = stream;
+                    video.setAttribute('playsinline', 'true');
+                    video.setAttribute('webkit-playsinline', 'true');
                     await video.play();
 
                     scannerActive = true;
@@ -155,42 +166,52 @@
                         return false;
                     }
 
+                    console.log('Checking camera availability for qr-scanner...');
                     const hasCamera = await QrScanner.hasCamera();
                     if (!hasCamera) {
-                        console.error('No camera found');
+                        console.error('No camera found for qr-scanner');
                         return false;
                     }
 
+                    console.log('Camera available, initializing qr-scanner');
                     const canvas = document.createElement('canvas');
                     canvas.getContext('2d', { willReadFrequently: true });
 
                     window.scanner = new QrScanner(video, result => {
                         const decoded = (typeof result === 'object' && result.data) ? result.data : result;
-                        console.log('QR detected:', decoded);
+                        console.log('QR detected (qr-scanner):', decoded);
                         redirectToPage(decoded);
                     }, {
                         onDecodeError: () => { },
                         highlightScanRegion: false,
                         highlightCodeOutline: false,
-                        maxScansPerSecond: 5,
+                        maxScansPerSecond: 10,
                         canvas: canvas
                     });
 
                     await window.scanner.start();
-                    console.log('QrScanner started');
+                    console.log('QrScanner started successfully');
                     return true;
                 } catch (error) {
-                    console.error('QrScanner error:', error);
+                    console.error('QrScanner initialization failed:', error);
                     return false;
                 }
             }
 
+            // Diagnostic info
+            console.log('Page protocol:', window.location.protocol);
+            console.log('MediaDevices supported:', !!navigator.mediaDevices);
+            console.log('getUserMedia supported:', !!navigator.mediaDevices?.getUserMedia);
+
             // Try jsQR first, fallback to qr-scanner
+            console.log('Starting jsQR scanner...');
             const jsqrSuccess = await initJsQRScanner();
             if (!jsqrSuccess) {
+                console.log('jsQR failed, trying qr-scanner...');
                 const qrScannerSuccess = await initQrScanner();
                 if (!qrScannerSuccess) {
-                    console.error('No QR scanner available');
+                    console.error('CRITICAL: No QR scanner available on this device/browser');
+                    alert('Camera access failed. Please check permissions and HTTPS.');
                 }
             }
         });
