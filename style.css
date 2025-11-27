@@ -18,6 +18,7 @@ body {
     min-height: 100vh;
     color: #f5f3f5;
     background: linear-gradient(135deg, #091839 0%, #ea01d9 20%, #143d7b 40%, #23b8c1 70%, #ea01d9 100%);
+    background-attachment: fixed;
     font-family: "poppins", sans-serif;
     text-align: center;
     padding: 20px 0;
