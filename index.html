@@ -103,15 +103,34 @@
                         return false;
                     }
 
-                    // Try multiple video constraints for better compatibility
+                    // Force rear camera (environment) with multiple fallback strategies
                     let stream;
                     try {
+                        // First attempt: Force rear camera with exact constraint
                         stream = await navigator.mediaDevices.getUserMedia({
-                            video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
+                            video: {
+                                facingMode: { exact: 'environment' },
+                                width: { ideal: 1280 },
+                                height: { ideal: 720 }
+                            }
                         });
+                        console.log('Rear camera (exact) obtained');
                     } catch (e) {
-                        console.warn('Environment camera failed, trying generic');
-                        stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                        try {
+                            // Second attempt: Rear camera without exact constraint
+                            stream = await navigator.mediaDevices.getUserMedia({
+                                video: {
+                                    facingMode: 'environment',
+                                    width: { ideal: 1280 },
+                                    height: { ideal: 720 }
+                                }
+                            });
+                            console.log('Rear camera (preferred) obtained');
+                        } catch (e2) {
+                            // Fallback: Any available camera
+                            console.warn('Rear camera not available, using any camera');
+                            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                        }
                     }
 
                     console.log('Camera stream obtained');
