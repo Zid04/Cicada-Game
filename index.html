@@ -36,32 +36,46 @@
     <!-- module import removed to avoid conflicts with global loader and to ensure single scanner instance -->
     <script>
         const pages = {
-            "WINNER1": "pages-winner/winner1.html",
-            "WINNER2": "pages-winner/winner2.html",
-            "WINNER3": "pages-winner/winner3.html",
-            "WINNER4": "pages-winner/winner4.html",
-            "WINNER5": "pages-winner/winner5.html",
-            "WINNER6": "pages-winner/winner6.html",
-            "WINNER7": "pages-winner/winner7.html",
-            "WINNER8": "pages-winner/winner8.html",
-            "WINNER9": "pages-winner/winner9.html",
-            "WINNER10": "pages-winner/winner10.html",
-            "WINNER11": "pages-winner/winner11.html",
-            "WINNER12": "pages-winner/winner12.html",
-            "WINNER13": "pages-winner/winner13.html",
-            "WINNER14": "pages-winner/winner14.html",
-            "WINNER15": "pages-winner/winner15.html"
+            "WINNER1": "{$BASE}/pages-winner/winner1.html",
+            "WINNER2": "{$BASE}/pages-winner/winner2.html",
+            "WINNER3": "{$BASE}/pages-winner/winner3.html",
+            "WINNER4": "{$BASE}/pages-winner/winner4.html",
+            "WINNER5": "{$BASE}/pages-winner/winner5.html",
+            "WINNER6": "{$BASE}/pages-winner/winner6.html",
+            "WINNER7": "{$BASE}/pages-winner/winner7.html",
+            "WINNER8": "{$BASE}/pages-winner/winner8.html",
+            "WINNER9": "{$BASE}/pages-winner/winner9.html",
+            "WINNER10": "{$BASE}/pages-winner/winner10.html",
+            "WINNER11": "{$BASE}/pages-winner/winner11.html",
+            "WINNER12": "{$BASE}/pages-winner/winner12.html",
+            "WINNER13": "{$BASE}/pages-winner/winner13.html",
+            "WINNER14": "{$BASE}/pages-winner/winner14.html",
+            "WINNER15": "{$BASE}/pages-winner/winner15.html"
         };
 
-        function redirectToPage(code) {
-            code = code.trim().toUpperCase();
+        function redirectToPage(raw) {
+            if (!raw) {
+                alert("invalid code. Please try again.");
+                return;
+            }
+            let code = raw.trim().toUpperCase();
+            console.log("code recu:", code);
+            const BASE = window.location.origin;
+            if (code.startsWith("HTTP://") || code.startsWith("HTTPS://") {
+                window.location.href = raw.trim();
+                return;
+            }
+            code = code
             if (pages[code]) {
                 window.location.href = pages[code];
-            } else {
-                alert("Invalid code. Please try again.");
             }
+            const cleaned = code.replace(/[^A-Z0-9]/gi, '');
+            if (pages[cleaned]) {
+                window.location.href = pages[cleaned];
+                return;
+            }
+            alert("Invalid code. Please try again.");
         }
-
         // Bouton submit - rediriger avec le code entré
         document.getElementById("submit-code").addEventListener("click", function () {
             const code = document.getElementById("code-input").value.trim();
