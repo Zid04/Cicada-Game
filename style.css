@@ -185,16 +185,12 @@ a:hover {
     box-shadow: 0 0 15px #ea01d9;
 }
 
-/*.sub-menu {
+.sub-menu {
     display: none;
     position: absolute;
     top: 100%;
     left: 0;
 }
-
-.sub-menu a {
-    background: #1a1f1f;
-}*/
 
 .menu li:hover .sub-menu {
     display: block;
