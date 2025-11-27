@@ -61,7 +61,7 @@
             let code = raw.trim().toUpperCase();
             console.log("code recu:", code);
             const BASE = window.location.origin;
-            if (code.startsWith("HTTP://") || code.startsWith("HTTPS://") {
+            if (code.startsWith("HTTP://") || code.startsWith("HTTPS://")) {
                 window.location.href = raw.trim();
                 return;
             }
