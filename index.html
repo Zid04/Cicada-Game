@@ -10,7 +10,7 @@
 
 <body>
     <nav class="menu">
-        <ul class="sub-menu">
+        <ul>
             <li><a href="index.html">Home</a></li>
             <li><a href="pages-winner/regles.html">Rule of Game</a></li>
             <li><a href="pages-winner/lexique.html">Glossary</a></li>
@@ -19,10 +19,11 @@
     <h1 class="title">Welcome in CICADA GAME</h1>
     <p> <span class="tooltip">Don't forget
             <span class="tooltiptext">Nobody is fully secure, so remain vigilant at all time and take appropriate action
-                for more information click here. <a href="https://www.cybermalveillance.gouv.fr/"></a>
+                for more information <a href="https://www.cybermalveillance.gouv.fr/">click here!</a>
             </span>
         </span></p>
     <p id="scan-text">scan or write your winning code and enjoy</p>
+    <div id="camera-status" aria-live="polite" class="status status--neutral">Initialisation du scanner...</div>
     <div id="reader">
         <video id="preview"></video>
 
@@ -32,22 +33,9 @@
     <div id="manual-input">
         <input type="text" id="code-input" placeholder="Enter your code here">
         <button id="submit-code">submit</button>
+        <button id="test-camera" style="background:linear-gradient(135deg,#ff69b4,#9370db);">Test Camera</button>
     </div>
-    <script type="module">
-        import QrScanner from "./qr-scanner.min.js";
-        const video = document.getElementById("preview");
-        const scanner = new QrScanner(video, result =>
-            alert("Code scanned: " + result),
-            {
-                HighlightScanRegion: false,
-                HighlightCodeOutline: false,
-                Worker: './qr-scanner-worker.min.js'
-            }
-        );
-        scanner.start().catch(e =>
-            console.error("erreur camera", e)
-        );
-    </script>
+    <!-- module import removed to avoid conflicts with global loader and to ensure single scanner instance -->
     <script>
         const pages = {
             "WINNER1": "pages-winner/winner1.html",
@@ -66,6 +54,7 @@
             "WINNER14": "pages-winner/winner14.html",
             "WINNER15": "pages-winner/winner15.html"
         };
+
         function redirectToPage(code) {
             code = code.trim().toUpperCase();
             if (pages[code]) {
@@ -74,29 +63,167 @@
                 alert("Invalid code. Please try again.");
             }
         }
-        const container = document.getElementById("qrcontainer");
-        Object.keys(pages).forEach(code => {
-            const div = document.createElement("div");
-            div.className = "qr-item";
-            new QrCode(div, {
-                text: code,
-                width: 150,
-                height: 150,
-                correctLevel: QrCode.CorrectLevel
-            });
-            const p =
-                document.createElement("p");
-            p.textContent = `code:${code}`
-            div.appendChild(p);
-            container.appendChild(div);
-        })
 
+        // Bouton submit - rediriger avec le code entré
         document.getElementById("submit-code").addEventListener("click", function () {
             const code = document.getElementById("code-input").value.trim();
             if (code) {
-                alert("Code submitted: " + code);
+                redirectToPage(code);
             } else {
                 alert("Please enter a code.");
+            }
+        });
+
+        // Permettre Entrée pour soumettre
+        document.getElementById("code-input").addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+                document.getElementById("submit-code").click();
+            }
+        });
+    </script>
+
+    <script type="module">
+        import QrScannerDefault from './qr-scanner.min.js';
+        // Expose as global for existing non-module code
+        window.QrScanner = QrScannerDefault;
+    </script>
+    <script>
+        function setCameraStatus(text, level) {
+            const el = document.getElementById('camera-status');
+            if (!el) return;
+            el.textContent = text;
+            el.classList.remove('status--ok', 'status--warn', 'status--error', 'status--neutral');
+            if (level === 'ok') el.classList.add('status--ok');
+            else if (level === 'warn') el.classList.add('status--warn');
+            else if (level === 'error') el.classList.add('status--error');
+            else el.classList.add('status--neutral');
+        }
+
+        window.addEventListener('load', function () {
+            setCameraStatus('Initialisation du scanner...', 'neutral');
+
+            const video = document.getElementById('preview');
+            if (!video) {
+                console.error('Video element not found');
+                setCameraStatus('Élément vidéo introuvable', 'error');
+                return;
+            }
+
+            // Patch all canvas getContext calls to use willReadFrequently by default (suppresses the warning)
+            const originalGetContext = HTMLCanvasElement.prototype.getContext;
+            HTMLCanvasElement.prototype.getContext = function (contextType, options) {
+                if (contextType === '2d' && options && !options.hasOwnProperty('willReadFrequently')) {
+                    options.willReadFrequently = true;
+                } else if (contextType === '2d') {
+                    options = options || {};
+                    options.willReadFrequently = true;
+                }
+                return originalGetContext.call(this, contextType, options);
+            };
+
+            // Wait for QrScanner library to be available
+            const waitForLib = (tries = 0) => {
+                if (typeof QrScanner === 'undefined') {
+                    if (tries > 20) {
+                        console.error('QrScanner library not loaded');
+                        setCameraStatus('La librairie QR n\'a pas pu être chargée', 'error');
+                        return;
+                    }
+                    setCameraStatus('Chargement de la librairie...', 'warn');
+                    return setTimeout(() => waitForLib(tries + 1), 200);
+                }
+
+                QrScanner.hasCamera().then(hasCamera => {
+                    if (!hasCamera) {
+                        console.error('No camera found');
+                        setCameraStatus('Aucune caméra détectée', 'error');
+                        return;
+                    }
+
+                    setCameraStatus('Démarrage de la caméra...', 'neutral');
+
+                    try {
+                        // Create a canvas with willReadFrequently: true to optimize getImageData calls (required for fast QR decoding)
+                        const optimizedCanvas = document.createElement('canvas');
+                        optimizedCanvas.getContext('2d', { willReadFrequently: true });
+
+                        // keep scanner globally so it isn't GC'd and so we can inspect it from console
+                        window.scanner = new QrScanner(video, result => {
+                            const decoded = (typeof result === 'object' && result.data) ? result.data : result;
+                            console.log('QR détecté:', decoded);
+                            setCameraStatus('QR détecté — redirection...', 'ok');
+                            redirectToPage(decoded);
+                        }, {
+                            onDecodeError: err => {
+                                console.error('onDecodeError details:', err);
+                                // Only show error in status if it's not "No QR code found" (that's normal/expected)
+                                if (err && err !== 'No QR code found' && !err.includes('No QR code found')) {
+                                    console.error('Real decode error:', err);
+                                    setCameraStatus('Erreur décodage: ' + (typeof err === 'string' ? err : err.message || err), 'error');
+                                }
+                            },
+                            highlightScanRegion: false,
+                            highlightCodeOutline: false,
+                            maxScansPerSecond: 5,
+                            canvas: optimizedCanvas
+                        });
+
+                        window.scanner.start().then(() => {
+                            console.log('Scanner started');
+                            setCameraStatus('Caméra active — scannez un QR', 'ok');
+                        }).catch(err => {
+                            console.error('Scanner start error:', err);
+                            if (err && err.name === 'NotAllowedError') {
+                                setCameraStatus('Permission caméra refusée — autorisez la caméra', 'error');
+                                alert('Autorisez l\'accès à la caméra dans les paramètres du navigateur.');
+                            } else if (err && err.name === 'NotFoundError') {
+                                setCameraStatus('Caméra introuvable', 'error');
+                            } else {
+                                setCameraStatus('Erreur d\'accès caméra: ' + (err && err.message ? err.message : ''), 'error');
+                            }
+                        });
+
+                    } catch (error) {
+                        console.error('Erreur initialisation scanner:', error);
+                        setCameraStatus('Erreur initialisation scanner (voir console)', 'error');
+                    }
+                }).catch(err => {
+                    console.error('Erreur vérification caméra:', err);
+                    setCameraStatus('Impossible de vérifier la caméra', 'error');
+                });
+            };
+
+            waitForLib();
+        });
+    </script>
+
+    <script>
+        // Test camera directly with getUserMedia (bypass QrScanner lib)
+        document.getElementById('test-camera').addEventListener('click', async function () {
+            const status = document.getElementById('camera-status');
+            try {
+                setCameraStatus('Demande d\'accès à la caméra...', 'neutral');
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const video = document.getElementById('preview');
+                video.srcObject = stream;
+                video.play().catch(() => { });
+                setCameraStatus('Flux caméra reçu — vérifiez si la vidéo s\'affiche', 'ok');
+
+                // Stop stream after 30s to avoid leaving camera on
+                setTimeout(() => {
+                    stream.getTracks().forEach(t => t.stop());
+                    setCameraStatus('Flux caméra arrêté (test terminé)', 'neutral');
+                }, 30000);
+            } catch (err) {
+                console.error('getUserMedia error:', err);
+                if (err && err.name === 'NotAllowedError') {
+                    setCameraStatus('Permission caméra refusée. Autorisez la caméra.', 'error');
+                    alert('Autorisez l\'accès à la caméra dans la fenêtre du navigateur.');
+                } else if (err && err.name === 'NotFoundError') {
+                    setCameraStatus('Aucune caméra détectée sur cet appareil.', 'error');
+                } else {
+                    setCameraStatus('Erreur lors du test caméra: ' + (err.message || err.name), 'error');
+                }
             }
         });
     </script>
