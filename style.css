@@ -151,7 +151,7 @@ a:hover {
     color: #f5f3f5;
     font-weight: bold;
     font-size: clamp(0.75rem, 2vw, 1rem);
-    padding: 12px 20px;
+    padding: 10px 20px;
     background-color: rgba(20, 61, 123, 0.9);
     border: 2px solid #ea01d9;
     border-radius: 5px;
@@ -159,6 +159,18 @@ a:hover {
     transition: all 0.3s ease;
     white-space: nowrap;
     text-align: center;
+}
+
+.menu ul {
+    display: flex;
+    /* Utilise Flexbox pour aligner les éléments */
+    flex-direction: row;
+    /* Ou "column" selon tes préférences */
+    justify-content: center;
+    /* Centre les items */
+    padding: 0;
+    gap: 10px;
+    /* Espacement entre les éléments */
 }
 
 .menu a:hover {
