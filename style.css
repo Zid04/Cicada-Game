@@ -39,6 +39,7 @@ body {
 .menu {
     width: 100%;
     padding: 10px;
+    justify-content: center;
 }
 
 .menu ul {
@@ -511,6 +512,10 @@ video {
     .menu a {
         font-size: 0.75rem;
         padding: 15px 25px;
+    }
+
+    .menu li {
+        margin: 5px 0;
     }
 }
 
