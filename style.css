@@ -42,16 +42,6 @@ body {
     justify-content: center;
 }
 
-.menu ul {
-    list-style-type: none;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
-}
-
-
 .winner {
     text-align: center;
     width: 100%;
@@ -499,10 +489,16 @@ video {
     }
 
     .menu ul {
-        flex-direction: column;
+        flex-direction: row;
         /* Ajoutez cela si vous voulez une disposition verticale sur mobile */
         align-items: center;
         /* Ajoutez cela pour centrer verticalement */
+        justify-content: center;
+        /* Centrer les éléments horizontalement */
+        padding: 0;
+        /* Assurez-vous qu'il n'y a pas de padding */
+        margin: 0;
+        /* Assurez-vous qu'il n'y a pas de marge */
     }
 
     .menu a {
