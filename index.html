@@ -94,6 +94,17 @@
             }
 
             let scannerActive = false;
+            let currentStream = null;
+
+            // Stop any active streams
+            function stopStream() {
+                if (currentStream) {
+                    currentStream.getTracks().forEach(track => track.stop());
+                    currentStream = null;
+                    video.srcObject = null;
+                }
+                scannerActive = false;
+            }
 
             // Use jsQR (lightweight, works great on mobile)
             async function initJsQRScanner() {
@@ -133,6 +144,7 @@
                         }
                     }
 
+                    currentStream = stream;
                     console.log('Camera stream obtained');
                     video.srcObject = stream;
                     video.setAttribute('playsinline', 'true');
@@ -159,6 +171,7 @@
                                 if (result) {
                                     console.log('QR detected:', result.data);
                                     scannerActive = false;
+                                    stopStream();
                                     redirectToPage(result.data);
                                     return;
                                 }
@@ -173,6 +186,7 @@
                     return true;
                 } catch (error) {
                     console.error('jsQR scanner error:', error);
+                    stopStream();
                     return false;
                 }
             }
@@ -185,27 +199,26 @@
                         return false;
                     }
 
-                    console.log('Checking camera availability for qr-scanner...');
-                    const hasCamera = await QrScanner.hasCamera();
-                    if (!hasCamera) {
-                        console.error('No camera found for qr-scanner');
-                        return false;
-                    }
+                    console.log('Initializing qr-scanner...');
 
-                    console.log('Camera available, initializing qr-scanner');
-                    const canvas = document.createElement('canvas');
-                    canvas.getContext('2d', { willReadFrequently: true });
+                    // Stop any previous stream first
+                    stopStream();
 
+                    // Give the system time to release the device
+                    await new Promise(resolve => setTimeout(resolve, 500));
+
+                    // Create new QrScanner instance
                     window.scanner = new QrScanner(video, result => {
                         const decoded = (typeof result === 'object' && result.data) ? result.data : result;
                         console.log('QR detected (qr-scanner):', decoded);
+                        stopStream();
                         redirectToPage(decoded);
                     }, {
                         onDecodeError: () => { },
                         highlightScanRegion: false,
                         highlightCodeOutline: false,
                         maxScansPerSecond: 10,
-                        canvas: canvas
+                        preferredCamera: 'environment'
                     });
 
                     await window.scanner.start();
@@ -213,6 +226,7 @@
                     return true;
                 } catch (error) {
                     console.error('QrScanner initialization failed:', error);
+                    stopStream();
                     return false;
                 }
             }
@@ -230,7 +244,10 @@
                 const qrScannerSuccess = await initQrScanner();
                 if (!qrScannerSuccess) {
                     console.error('CRITICAL: No QR scanner available on this device/browser');
-                    alert('Camera access failed. Please check permissions and HTTPS.');
+                    const errorMsg = 'Camera access failed. Please:\n1. Allow camera access\n2. Use HTTPS\n3. Try a different browser';
+                    alert(errorMsg);
+                    document.getElementById('scan-text').innerText = '❌ Camera not accessible - use manual code entry below';
+                    document.getElementById('reader').style.opacity = '0.5';
                 }
             }
         });

@@ -16,15 +16,18 @@ body {
     align-items: center;
     justify-content: flex-start;
     min-height: 100vh;
-    color: white;
-    background: linear-gradient(135deg, #ff69b4, #9370db, #87ceeb);
+    color: #f5f3f5;
+    background: linear-gradient(135deg, #091839 0%, #ea01d9 20%, #143d7b 40%, #23b8c1 70%, #ea01d9 100%);
     font-family: "poppins", sans-serif;
     text-align: center;
     padding: 20px 0;
 }
 
 .title {
-    color: #f1f5f9;
+    background: linear-gradient(135deg, #ea01d9, #23b8c1, #ea01d9);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     font-size: clamp(1.5rem, 6vw, 48px);
     margin: 15px 20px 10px 20px;
     font-weight: bold;
@@ -90,14 +93,14 @@ body {
 }
 
 .conseil {
-    background: linear-gradient(135deg, rgba(255, 105, 180, 0.2), rgba(147, 112, 219, 0.2));
-    border: 3px solid #ff69b4;
-    color: #fff;
+    background: linear-gradient(135deg, rgba(20, 61, 123, 0.4), rgba(35, 184, 193, 0.2));
+    border: 3px solid #ea01d9;
+    color: #f5f3f5;
     padding: 30px;
     border-radius: 15px;
     max-width: 600px;
     margin: 30px auto;
-    box-shadow: 0 8px 30px rgba(255, 105, 180, 0.3);
+    box-shadow: 0 8px 30px rgba(234, 1, 217, 0.3);
     backdrop-filter: blur(10px);
 }
 
@@ -105,7 +108,7 @@ body {
     margin-top: 0;
     margin-bottom: 15px;
     font-size: clamp(1.2rem, 3vw, 1.8rem);
-    color: #ffff00;
+    color: #23b8c1;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
@@ -119,19 +122,21 @@ a {
     display: inline-block;
     margin-top: 20px;
     padding: 12px 25px;
-    background-color: #9370db;
-    color: white;
+    background: linear-gradient(135deg, #143d7b, #23b8c1);
+    color: #f5f3f5;
     text-decoration: none;
     border-radius: 8px;
+    border: 2px solid #ea01d9;
     transition: all 0.3s ease;
     font-size: clamp(0.9rem, 2.5vw, 1rem);
     font-weight: bold;
 }
 
 a:hover {
-    background-color: #ff69b4;
+    background: linear-gradient(135deg, #ea01d9, #23b8c1);
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 105, 180, 0.4);
+    box-shadow: 0 5px 20px #ea01d9;
+    color: #091839;
 }
 
 .menu li {
@@ -141,11 +146,12 @@ a:hover {
 
 .menu a {
     text-decoration: none;
-    color: white;
+    color: #f5f3f5;
     font-weight: bold;
     font-size: clamp(0.75rem, 2vw, 1rem);
     padding: 8px 12px;
-    background-color: rgba(147, 112, 219, 0.8);
+    background-color: rgba(20, 61, 123, 0.9);
+    border: 2px solid #ea01d9;
     border-radius: 5px;
     display: inline-block;
     transition: all 0.3s ease;
@@ -153,8 +159,10 @@ a:hover {
 }
 
 .menu a:hover {
-    background-color: #ff69b4;
+    background-color: #ea01d9;
+    color: #091839;
     transform: scale(1.05);
+    box-shadow: 0 0 15px #ea01d9;
 }
 
 /*.sub-menu {
@@ -174,9 +182,10 @@ a:hover {
 
 #scan-text {
     margin: 10px 20px 20px 20px;
-    color: #f1f5f9;
+    color: #ea01d9;
     font-size: clamp(0.85rem, 2.5vw, 1rem);
-    font-weight: 500;
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(234, 1, 217, 0.5);
 }
 
 /* Camera status indicator */
@@ -193,23 +202,23 @@ a:hover {
 }
 
 .status--ok {
-    background: linear-gradient(90deg, #8ef0a6, #3bd37a);
-    color: #053d11;
+    background: linear-gradient(90deg, #23b8c1, #091839);
+    color: #f5f3f5;
 }
 
 .status--warn {
-    background: linear-gradient(90deg, #ffd27a, #ff8a00);
-    color: #472900;
+    background: linear-gradient(90deg, #ea01d9, #143d7b);
+    color: #f5f3f5;
 }
 
 .status--error {
-    background: linear-gradient(90deg, #ff9bb0, #ff4757);
-    color: #3a0007;
+    background: linear-gradient(90deg, #ea01d9, #091839);
+    color: #f5f3f5;
 }
 
 .status--neutral {
-    background: rgba(255, 255, 255, 0.06);
-    color: #fff;
+    background: rgba(20, 61, 123, 0.3);
+    color: #f5f3f5;
 }
 
 #reader {
@@ -220,8 +229,8 @@ a:hover {
     background: rgba(0, 0, 0, 0.4);
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    border: 3px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 20px #ea01d9;
+    border: 3px solid #ea01d9;
     flex-shrink: 0;
 }
 
@@ -246,7 +255,7 @@ video {
     left: 5%;
     width: 90%;
     height: 90%;
-    border: 4px solid #ff69b4;
+    border: 4px solid #ea01d9;
     border-radius: 15px;
     pointer-events: none;
     animation: glow 2s infinite alternate;
@@ -254,11 +263,11 @@ video {
 
 @keyframes glow {
     from {
-        box-shadow: inset 0 0 10px #ff69b4, 0 0 10px #ff69b4;
+        box-shadow: inset 0 0 10px #ea01d9, 0 0 10px #ea01d9;
     }
 
     to {
-        box-shadow: inset 0 0 25px #ff69b4, 0 0 25px #ff69b4;
+        box-shadow: inset 0 0 25px #ea01d9, 0 0 25px #ea01d9;
     }
 }
 
@@ -268,9 +277,9 @@ video {
     left: 5%;
     width: 90%;
     height: 3px;
-    background: linear-gradient(90deg, transparent, #ff69b4, transparent);
+    background: linear-gradient(90deg, transparent, #ea01d9, transparent);
     border-radius: 2px;
-    box-shadow: 0 0 10px #ff69b4;
+    box-shadow: 0 0 10px #ea01d9;
     animation: laser-move 2s linear infinite;
     pointer-events: none;
 }
@@ -294,6 +303,10 @@ video {
     padding: 20px;
     width: 100%;
     max-width: 400px;
+    background: rgba(234, 1, 217, 0.1);
+    border: 2px solid #ea01d9;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(234, 1, 217, 0.3);
 }
 
 #code-input {
@@ -302,10 +315,10 @@ video {
     min-width: 200px;
     padding: 12px 15px;
     font-size: clamp(0.9rem, 2.5vw, 1.1rem);
-    border: 2px solid #9370db;
+    border: 2px solid #143d7b;
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.95);
-    color: #333;
+    background: #f5f3f5;
+    color: #091839;
     outline: none;
     transition: all 0.3s ease;
     -webkit-appearance: none;
@@ -313,12 +326,12 @@ video {
 }
 
 #code-input::placeholder {
-    color: #999;
+    color: #23b8c1;
 }
 
 #code-input:focus {
-    border-color: #ff69b4;
-    box-shadow: 0 0 12px rgba(255, 105, 180, 0.5);
+    border-color: #ea01d9;
+    box-shadow: 0 0 12px #ea01d9;
     transform: scale(1.02);
 }
 
@@ -329,21 +342,21 @@ video {
     padding: 12px 30px;
     font-size: clamp(0.9rem, 2.5vw, 1.1rem);
     font-weight: bold;
-    border: none;
+    border: 2px solid #ea01d9;
     border-radius: 8px;
-    background: linear-gradient(135deg, #9370db, #ff69b4);
-    color: white;
+    background: linear-gradient(135deg, #143d7b, #23b8c1);
+    color: #f5f3f5;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(147, 112, 219, 0.4);
+    box-shadow: 0 4px 15px #ea01d9;
     -webkit-appearance: none;
     appearance: none;
 }
 
 #submit-code:hover {
-    background: linear-gradient(135deg, #ff69b4, #9370db);
+    background: linear-gradient(135deg, #23b8c1, #143d7b);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 105, 180, 0.5);
+    box-shadow: 0 6px 20px #ea01d9;
 }
 
 #submit-code:active {
@@ -403,6 +416,51 @@ video {
         margin: 10px 15px;
     }
 
+    .winner {
+        width: 100%;
+        max-width: 100%;
+        padding: 10px;
+    }
+
+    .winner h1 {
+        font-size: 1.8rem;
+        margin: 15px 10px;
+    }
+
+    .winner img {
+        width: calc(100% - 20px);
+        max-width: 100%;
+        margin: 15px 10px;
+        border-radius: 15px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .conseil {
+        width: calc(100% - 40px);
+        max-width: 100%;
+        padding: 20px;
+        margin: 15px 10px;
+        border: 2px solid #ff69b4;
+    }
+
+    .conseil h2 {
+        font-size: 1.2rem;
+        margin-bottom: 12px;
+    }
+
+    .conseil p {
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    a {
+        width: calc(100% - 30px);
+        max-width: calc(100% - 30px);
+        padding: 12px 15px;
+        font-size: 0.95rem;
+        margin: 10px auto;
+    }
+
     #reader {
         width: 90vw;
         height: 90vw;
@@ -439,6 +497,20 @@ video {
         padding: 15px 0;
     }
 
+    .winner {
+        padding: 15px;
+    }
+
+    .winner img {
+        max-width: 100%;
+        margin: 20px auto;
+    }
+
+    .conseil {
+        margin: 20px auto;
+        padding: 25px;
+    }
+
     #reader {
         margin: 15px auto;
     }
@@ -451,5 +523,19 @@ video {
 
     #reader {
         margin: 30px auto;
+    }
+}
+
+@media (min-width: 1024px) {
+    .winner {
+        max-width: 800px;
+    }
+
+    .conseil {
+        max-width: 700px;
+    }
+
+    .winner img {
+        max-width: 500px;
     }
 }
