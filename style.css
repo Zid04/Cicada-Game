@@ -151,7 +151,7 @@ a:hover {
     color: #f5f3f5;
     font-weight: bold;
     font-size: clamp(0.75rem, 2vw, 1rem);
-    padding: 8px 12px;
+    padding: 12px 20px;
     background-color: rgba(20, 61, 123, 0.9);
     border: 2px solid #ea01d9;
     border-radius: 5px;
