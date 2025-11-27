@@ -23,7 +23,6 @@
             </span>
         </span></p>
     <p id="scan-text">scan or write your winning code and enjoy</p>
-    <div id="camera-status" aria-live="polite" class="status status--neutral">Initialisation du scanner...</div>
     <div id="reader">
         <video id="preview"></video>
 
@@ -33,7 +32,6 @@
     <div id="manual-input">
         <input type="text" id="code-input" placeholder="Enter your code here">
         <button id="submit-code">submit</button>
-        <button id="test-camera" style="background:linear-gradient(135deg,#ff69b4,#9370db);">Test Camera</button>
     </div>
     <!-- module import removed to avoid conflicts with global loader and to ensure single scanner instance -->
     <script>
@@ -82,151 +80,122 @@
         });
     </script>
 
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
     <script type="module">
         import QrScannerDefault from './qr-scanner.min.js';
-        // Expose as global for existing non-module code
         window.QrScanner = QrScannerDefault;
     </script>
     <script>
-        function setCameraStatus(text, level) {
-            const el = document.getElementById('camera-status');
-            if (!el) return;
-            el.textContent = text;
-            el.classList.remove('status--ok', 'status--warn', 'status--error', 'status--neutral');
-            if (level === 'ok') el.classList.add('status--ok');
-            else if (level === 'warn') el.classList.add('status--warn');
-            else if (level === 'error') el.classList.add('status--error');
-            else el.classList.add('status--neutral');
-        }
-
-        window.addEventListener('load', function () {
-            setCameraStatus('Initialisation du scanner...', 'neutral');
-
+        window.addEventListener('load', async function () {
             const video = document.getElementById('preview');
             if (!video) {
                 console.error('Video element not found');
-                setCameraStatus('Élément vidéo introuvable', 'error');
                 return;
             }
 
-            // Patch all canvas getContext calls to use willReadFrequently by default (suppresses the warning)
-            const originalGetContext = HTMLCanvasElement.prototype.getContext;
-            HTMLCanvasElement.prototype.getContext = function (contextType, options) {
-                if (contextType === '2d' && options && !options.hasOwnProperty('willReadFrequently')) {
-                    options.willReadFrequently = true;
-                } else if (contextType === '2d') {
-                    options = options || {};
-                    options.willReadFrequently = true;
-                }
-                return originalGetContext.call(this, contextType, options);
-            };
+            let scannerActive = false;
 
-            // Wait for QrScanner library to be available
-            const waitForLib = (tries = 0) => {
-                if (typeof QrScanner === 'undefined') {
-                    if (tries > 20) {
-                        console.error('QrScanner library not loaded');
-                        setCameraStatus('La librairie QR n\'a pas pu être chargée', 'error');
-                        return;
+            // Use jsQR (lightweight, works great on mobile)
+            async function initJsQRScanner() {
+                try {
+                    if (typeof jsQR === 'undefined') {
+                        console.warn('jsQR not loaded');
+                        return false;
                     }
-                    setCameraStatus('Chargement de la librairie...', 'warn');
-                    return setTimeout(() => waitForLib(tries + 1), 200);
-                }
 
-                QrScanner.hasCamera().then(hasCamera => {
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: 'environment' }
+                    });
+                    video.srcObject = stream;
+                    await video.play();
+
+                    scannerActive = true;
+                    console.log('jsQR scanner started');
+
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+                    const scanFrame = () => {
+                        if (!scannerActive) return;
+
+                        if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                            canvas.width = video.videoWidth;
+                            canvas.height = video.videoHeight;
+                            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                            try {
+                                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                                const result = jsQR(imageData.data, imageData.width, imageData.height);
+                                if (result) {
+                                    console.log('QR detected:', result.data);
+                                    scannerActive = false;
+                                    redirectToPage(result.data);
+                                    return;
+                                }
+                            } catch (e) {
+                                console.debug('jsQR scan error:', e);
+                            }
+                        }
+                        requestAnimationFrame(scanFrame);
+                    };
+
+                    scanFrame();
+                    return true;
+                } catch (error) {
+                    console.error('jsQR scanner error:', error);
+                    return false;
+                }
+            }
+
+            // Fallback to qr-scanner
+            async function initQrScanner() {
+                try {
+                    if (typeof QrScanner === 'undefined') {
+                        console.error('QrScanner not available');
+                        return false;
+                    }
+
+                    const hasCamera = await QrScanner.hasCamera();
                     if (!hasCamera) {
                         console.error('No camera found');
-                        setCameraStatus('Aucune caméra détectée', 'error');
-                        return;
+                        return false;
                     }
 
-                    setCameraStatus('Démarrage de la caméra...', 'neutral');
+                    const canvas = document.createElement('canvas');
+                    canvas.getContext('2d', { willReadFrequently: true });
 
-                    try {
-                        // Create a canvas with willReadFrequently: true to optimize getImageData calls (required for fast QR decoding)
-                        const optimizedCanvas = document.createElement('canvas');
-                        optimizedCanvas.getContext('2d', { willReadFrequently: true });
+                    window.scanner = new QrScanner(video, result => {
+                        const decoded = (typeof result === 'object' && result.data) ? result.data : result;
+                        console.log('QR detected:', decoded);
+                        redirectToPage(decoded);
+                    }, {
+                        onDecodeError: () => { },
+                        highlightScanRegion: false,
+                        highlightCodeOutline: false,
+                        maxScansPerSecond: 5,
+                        canvas: canvas
+                    });
 
-                        // keep scanner globally so it isn't GC'd and so we can inspect it from console
-                        window.scanner = new QrScanner(video, result => {
-                            const decoded = (typeof result === 'object' && result.data) ? result.data : result;
-                            console.log('QR détecté:', decoded);
-                            setCameraStatus('QR détecté — redirection...', 'ok');
-                            redirectToPage(decoded);
-                        }, {
-                            onDecodeError: err => {
-                                console.error('onDecodeError details:', err);
-                                // Only show error in status if it's not "No QR code found" (that's normal/expected)
-                                if (err && err !== 'No QR code found' && !err.includes('No QR code found')) {
-                                    console.error('Real decode error:', err);
-                                    setCameraStatus('Erreur décodage: ' + (typeof err === 'string' ? err : err.message || err), 'error');
-                                }
-                            },
-                            highlightScanRegion: false,
-                            highlightCodeOutline: false,
-                            maxScansPerSecond: 5,
-                            canvas: optimizedCanvas
-                        });
+                    await window.scanner.start();
+                    console.log('QrScanner started');
+                    return true;
+                } catch (error) {
+                    console.error('QrScanner error:', error);
+                    return false;
+                }
+            }
 
-                        window.scanner.start().then(() => {
-                            console.log('Scanner started');
-                            setCameraStatus('Caméra active — scannez un QR', 'ok');
-                        }).catch(err => {
-                            console.error('Scanner start error:', err);
-                            if (err && err.name === 'NotAllowedError') {
-                                setCameraStatus('Permission caméra refusée — autorisez la caméra', 'error');
-                                alert('Autorisez l\'accès à la caméra dans les paramètres du navigateur.');
-                            } else if (err && err.name === 'NotFoundError') {
-                                setCameraStatus('Caméra introuvable', 'error');
-                            } else {
-                                setCameraStatus('Erreur d\'accès caméra: ' + (err && err.message ? err.message : ''), 'error');
-                            }
-                        });
-
-                    } catch (error) {
-                        console.error('Erreur initialisation scanner:', error);
-                        setCameraStatus('Erreur initialisation scanner (voir console)', 'error');
-                    }
-                }).catch(err => {
-                    console.error('Erreur vérification caméra:', err);
-                    setCameraStatus('Impossible de vérifier la caméra', 'error');
-                });
-            };
-
-            waitForLib();
-        });
-    </script>
-
-    <script>
-        // Test camera directly with getUserMedia (bypass QrScanner lib)
-        document.getElementById('test-camera').addEventListener('click', async function () {
-            const status = document.getElementById('camera-status');
-            try {
-                setCameraStatus('Demande d\'accès à la caméra...', 'neutral');
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                const video = document.getElementById('preview');
-                video.srcObject = stream;
-                video.play().catch(() => { });
-                setCameraStatus('Flux caméra reçu — vérifiez si la vidéo s\'affiche', 'ok');
-
-                // Stop stream after 30s to avoid leaving camera on
-                setTimeout(() => {
-                    stream.getTracks().forEach(t => t.stop());
-                    setCameraStatus('Flux caméra arrêté (test terminé)', 'neutral');
-                }, 30000);
-            } catch (err) {
-                console.error('getUserMedia error:', err);
-                if (err && err.name === 'NotAllowedError') {
-                    setCameraStatus('Permission caméra refusée. Autorisez la caméra.', 'error');
-                    alert('Autorisez l\'accès à la caméra dans la fenêtre du navigateur.');
-                } else if (err && err.name === 'NotFoundError') {
-                    setCameraStatus('Aucune caméra détectée sur cet appareil.', 'error');
-                } else {
-                    setCameraStatus('Erreur lors du test caméra: ' + (err.message || err.name), 'error');
+            // Try jsQR first, fallback to qr-scanner
+            const jsqrSuccess = await initJsQRScanner();
+            if (!jsqrSuccess) {
+                const qrScannerSuccess = await initQrScanner();
+                if (!qrScannerSuccess) {
+                    console.error('No QR scanner available');
                 }
             }
         });
     </script>
+
 </body>
 
 </html>
