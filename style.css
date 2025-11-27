@@ -166,6 +166,7 @@ a:hover {
     display: flex;
     /* Utilise Flexbox pour aligner les éléments */
     flex-direction: row;
+    flex-wrap: wrap;
     /* Ou "column" selon tes préférences */
     justify-content: center;
     /* Centre les items */
@@ -501,7 +502,10 @@ video {
     }
 
     .menu ul {
-        gap: 5px;
+        flex-direction: column;
+        /* Ajoutez cela si vous voulez une disposition verticale sur mobile */
+        align-items: center;
+        /* Ajoutez cela pour centrer verticalement */
     }
 
     .menu a {
