@@ -173,8 +173,14 @@
                                     scannerActive = false;
                                     stopStream();
                                     redirectToPage(result.data);
+                                    stopStream();  // Arrête le flux
+                                    setTimeout(() => {
+                                        // Redémarrez le scanner après un délai
+                                        scannerActive = true;
+                                        startScanner(); // Fonction qui démarre le scanner à n
+                                    }, 1000); // Délai de 1 seconde avant de redémarrer       
                                     return;
-                                }
+                                } else { console.debug('No QR code detected in this frame.'); }
                             } catch (e) {
                                 console.debug('jsQR scan error:', e);
                             }
@@ -188,6 +194,12 @@
                     console.error('jsQR scanner error:', error);
                     stopStream();
                     return false;
+                }
+            }
+            function startScanner() {
+                // Essayer de redémarrer le scanner
+                if (!scannerActive) {
+                    initJsQRScanner(); // Vous pouvez utiliser initQrScanner() si c'est votre choix
                 }
             }
 
