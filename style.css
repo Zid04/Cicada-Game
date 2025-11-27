@@ -112,9 +112,9 @@ body {
 }
 
 a {
-    display: inline-block;
+    display: flex;
     margin-top: 20px;
-    padding: 12px 25px;
+    padding: 12px 20px;
     background: linear-gradient(135deg, #143d7b, #23b8c1);
     color: #f5f3f5;
     text-decoration: none;
@@ -123,6 +123,9 @@ a {
     transition: all 0.3s ease;
     font-size: clamp(0.9rem, 2.5vw, 1rem);
     font-weight: bold;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
 a:hover {
@@ -135,7 +138,7 @@ a:hover {
 .menu li {
     display: inline-block;
     position: relative;
-    margin: 0 1Opx;
+    margin: 0 10px;
 }
 
 .menu a {
@@ -178,8 +181,9 @@ a:hover {
 .sub-menu {
     display: none;
     position: absolute;
-    top: 100%;
-    left: 0;
+    padding: 10px;
+    border: 2px solid #ea01d9;
+    border-radius: 6px;
 }
 
 .menu li:hover .sub-menu {
