@@ -37,8 +37,11 @@ body {
 }
 
 .menu {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
     width: 100%;
-    padding: 10px;
+    margin-top: 10px;
     justify-content: center;
 }
 
@@ -507,7 +510,9 @@ video {
 
     .menu a {
         font-size: 0.75rem;
-        padding: 15px 25px;
+        padding: 10px 15px;
+        border: 1px solid #ea01d9;
+        box-shadow: 0 0 8px #ea01d9;
     }
 
     .menu li {
