@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> rules of game</title>
+    <title>Cicada-3032: The Cybersecurity Board Game Rules</title>
     <link rel="stylesheet" href="../style.css">
 </head>
 <style>
@@ -12,37 +12,61 @@
         margin: 0;
         padding: 20px;
         text-align: left;
+        font-family: Arial, sans-serif;
+        background-color: #121212;
+        color: #ffffff;
     }
 
-    h1,
+    h1 {
+        color: #1e90ff;
+        font-size: 2.5rem;
+    }
+
     h2,
     h3 {
-        color: #fff;
-        text-align: left;
+        color: #1e90ff;
+        font-size: 2rem;
     }
 
     p,
     ul {
-        color: #fff;
-        line-height: 1.5;
-        text-align: left;
-        font-size: 1.5rem;
+        line-height: 1.6;
+        font-size: 1.2rem;
+        color: #ffffff;
     }
 
-    .rule {
-        margin-top: 65px;
-        align-items: left;
-        padding: 15px;
-        margin-bottom: 10px;
+    .section {
+        border: 1px solid #444;
         border-radius: 8px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        text-align: left;
+        padding: 20px;
+        margin-bottom: 20px;
+        background-color: #222;
     }
 
     ul {
         list-style-type: disc;
         margin-left: 20px;
-        text-align: left;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+
+    .table th,
+    .table td {
+        border: 1px solid #444;
+        padding: 10px;
+    }
+
+    .table th {
+        background-color: #333;
+        color: #1e90ff;
+    }
+
+    .table td {
+        background-color: #222;
     }
 </style>
 
@@ -50,91 +74,191 @@
     <nav class="menu">
         <ul class="sub-menu">
             <li><a href="../index.html">Home</a></li>
-            <li><a href="regles.html">Rule of Game</a></li>
+            <li><a href="regles.html">Rules of Game</a></li>
             <li><a href="./lexique.html">Glossary</a></li>
         </ul>
     </nav>
-    <div class="rule">
-        <h1>Cicada-3032 Rules</h1>
-        <div class="">
-            <h2>Welcome to Cicada-3032</h2>
-            <p>Cicada-3032 is a board game focused on cybersecurity. The goal is to be the first to reach the center of
-                the
-                board. You can use cards to help yourself or to hinder your opponents.</p>
-        </div>
 
-        <h2>Game Contents:</h2>
-        <ul>
-            <li>1 game board</li>
-            <li>4 game pieces</li>
-            <li>3 dice (1d10, 1d6, 1d3)</li>
-            <li>64 "draw" cards (30 bonus cards, 30 malus cards, 4 protection cards)</li>
-            <li>32 "trap" cards (various effects)</li>
-            <li>32 "quiz" cards</li>
-        </ul>
+    <div class="section">
+        <h1>Cicada-3032: The Cybersecurity Board Game Rules</h1>
+        <h2>Welcome to Cicada-3032</h2>
+        <p>Cicada-3032 is a board game centered around cybersecurity in which players compete to be the first to reach
+            the center of the board. To achieve this, you will use Bonus cards to protect and benefit yourself, and
+            Penalty cards to slow down or block your opponents as they progress across the board.</p>
+    </div>
 
-        <h2>Setting Up the Game:</h2>
+    <div class="section">
+        <h2>Game Content</h2>
         <ul>
-            <li>Place the board in the center of the table with the card decks next to it.</li>
-            <li>Each player chooses a game piece and places it on the starting space.</li>
-            <li>Deal 5 cards to each player and add the protection cards to the draw deck.</li>
-            <li>Shuffle each card deck.</li>
-            <li>Start playing.</li>
+            <li>The game board</li>
+            <li>4 pawns</li>
+            <li>3 dice:
+                <ul>
+                    <li>1d10 (10-sided) – First Circle</li>
+                    <li>1d6 (6-sided) – Second Circle</li>
+                    <li>1d3 (3-sided) – Third Circle</li>
+                </ul>
+            </li>
+            <li>1 "Draw" deck of 64 cards:
+                <ul>
+                    <li>30 Bonus cards</li>
+                    <li>30 Penalty (Malus) cards</li>
+                    <li>4 Protection cards</li>
+                </ul>
+            </li>
+            <li>1 "Trap" deck of 32 cards (various effects)</li>
+            <li>1 "Quiz" deck of 16 cards</li>
         </ul>
+    </div>
 
-        <h2>Turn Structure:</h2>
-        <ul>
-            <li><strong>Draw Phase:</strong> The player draws a card.</li>
-            <li><strong>Pre-card Phase:</strong> The player may play a bonus card or a malus card.</li>
-            <li><strong>Movement Phase:</strong> The player rolls a die and moves their piece forward the number of
-                spaces
-                shown.</li>
-            <li><strong>Space Effect Phase:</strong> The player resolves the effect of the space they landed on.</li>
-            <li><strong>Post-card Phase:</strong> The player may play another bonus card or malus card.</li>
-        </ul>
+    <div class="section">
+        <h2>Setting Up the Game</h2>
+        <ol>
+            <li><strong>Place the Board:</strong> Unfold and place the board at the center of the table, with the decks
+                next to it.</li>
+            <li><strong>Choose Pawns:</strong> Each player chooses a pawn and places it on the Starting Space (note:
+                this is not space 1).</li>
+            <li><strong>Deal Cards:</strong> Deal 5 cards to each player.</li>
+            <li><strong>Prepare Draw Deck:</strong> Add the 4 Protection cards to the "Draw" deck.</li>
+            <li><strong>Shuffle:</strong> Shuffle each deck (Draw, Trap, Quiz).</li>
+            <li><strong>Start:</strong> Begin the game!</li>
+        </ol>
+    </div>
 
-        <h2>Types of Spaces:</h2>
-        <ul>
-            <li><strong>Draw Space:</strong> Draw a card from the draw deck.</li>
-            <li><strong>Trap Space:</strong> Draw a card from the trap deck.</li>
-        </ul>
+    <div class="section">
+        <h2>Turns</h2>
+        <p>A player's turn consists of 2 phases, which must be executed in order:</p>
+        <ol>
+            <li><strong>Draw Phase:</strong> The player draws one card from the Draw deck.</li>
+            <li><strong>Action Phase:</strong> The player has 2 actions in a turn (1 Movement + 1 Card):
+                <ul>
+                    <li><strong>Movement:</strong> The player rolls the die and moves forward a number of spaces equal
+                        to the result. This includes any bonus/penalty effects from cards.</li>
+                    <li>The player resolves the effect of the space they landed on.</li>
+                    <li>Phase: The player may use one Bonus card or one Penalty card.</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
 
-        <h2>Space Rules:</h2>
-        <h3>DMZ (Demilitarized Zone):</h3>
-        <ul>
-            <li>The DMZ is a safe zone where players cannot be targeted by card effects.</li>
-            <li>To advance, they must correctly answer a quiz question.</li>
-            <li>When a player enters the DMZ, they draw a quiz card and must answer it.</li>
-            <li>If they answer correctly, they can move forward on their next turn. If they answer incorrectly, they
-                must
-                answer another quiz question on their next turn before they can advance.</li>
-            <li>DMZ Rules:</li>
-            <ul>
-                <li>If a player must move back and reaches the DMZ, they must answer another quiz question to advance.
-                </li>
-                <li>A player in the DMZ cannot be targeted by others.</li>
-            </ul>
-        </ul>
+    <div class="section">
+        <h2>Types of Spaces</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Symbol</th>
+                    <th>Space Type</th>
+                    <th>Effect</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>(Draw Symbol)</td>
+                    <td>Draw Space</td>
+                    <td>Draw one card from the Draw deck.</td>
+                </tr>
+                <tr>
+                    <td>(Trap Symbol)</td>
+                    <td>Trap Space</td>
+                    <td>Draw one card from the Trap deck and apply its effect.</td>
+                </tr>
+                <tr>
+                    <td>(+2)</td>
+                    <td>Move Forward</td>
+                    <td>Move forward 2 additional spaces.</td>
+                </tr>
+                <tr>
+                    <td>(-2)</td>
+                    <td>Move Backward</td>
+                    <td>Move backward 2 spaces.</td>
+                </tr>
+                <tr>
+                    <td>(?)</td>
+                    <td>Quiz Space</td>
+                    <td>(The effect for this space is not detailed in the rules provided.)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-        <h2>Cards:</h2>
-        <h3>Types of Cards:</h3>
+    <div class="section">
+        <h2>DMZ (Demilitarized Zone)</h2>
+        <p>The DMZ is a safe zone where players cannot be targeted by card effects.</p>
+        <h3>DMZ Rules:</h3>
         <ul>
-            <li><strong>Bonus Card:</strong> Provides a positive effect to the targeted player.</li>
-            <li><strong>Malus Card:</strong> Applies a negative effect to the targeted opponent.</li>
-            <li><strong>Protection Card:</strong> Grants protection against a specific type of card.</li>
+            <li><strong>Entering the DMZ:</strong> When a player enters the DMZ, they must immediately draw a Quiz card
+                and answer it. If they answer correctly, they may move forward on their next turn; otherwise, they must
+                answer another Quiz card on their next turn before they can advance.</li>
+            <li><strong>Moving Back:</strong> If a player must move back several spaces and lands in or passes through
+                the DMZ, they must still answer a Quiz card to be allowed to advance on a future turn.</li>
+            <li><strong>Immunity:</strong> A player currently inside the DMZ cannot be targeted by other players' cards.
+            </li>
         </ul>
+    </div>
 
-        <h3>Card Rules:</h3>
+    <div class="section">
+        <h2>Cards</h2>
+        <h3>Types of Cards</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Card Type</th>
+                    <th>Effect</th>
+                    <th>Deck</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Bonus</td>
+                    <td>Grants a positive effect to the targeted player (usually the player using the card).</td>
+                    <td>Draw Deck</td>
+                </tr>
+                <tr>
+                    <td>Penalty (Malus)</td>
+                    <td>Applies a negative effect to the targeted opponent.</td>
+                    <td>Draw Deck</td>
+                </tr>
+                <tr>
+                    <td>Protection</td>
+                    <td>Grants protection against a specific card category.</td>
+                    <td>Draw Deck</td>
+                </tr>
+                <tr>
+                    <td>Trap</td>
+                    <td>Applies a negative effect to one or more players.</td>
+                    <td>Trap Deck</td>
+                </tr>
+                <tr>
+                    <td>Quiz</td>
+                    <td>A question that must be answered to progress (in the DMZ).</td>
+                    <td>Quiz Deck</td>
+                </tr>
+            </tbody>
+        </table>
+        <h3>Card Rules</h3>
+        <h4>Penalty (Malus) Cards</h4>
         <ul>
-            <li><strong>Malus:</strong> A player can only be affected by one card of a given type at a time (for
-                example, a
-                player cannot be hit by two "virus" cards simultaneously).</li>
-            <li><strong>Protection:</strong> When a player uses a protection card, they become immune to the associated
-                card
-                type until they reach the next SAS. Once they reach that point, the protection card is discarded. A
-                player
-                can have only one active protection card at a time.</li>
+            <li>A player can only be affected by one card of a given type at a time. (Example: A player cannot be hit
+                with two "Virus" cards simultaneously.)</li>
         </ul>
+        <h4>Protection Cards</h4>
+        <ul>
+            <li>When a player uses a Protection card, they become immune to the associated card type.</li>
+            <li>Duration: The Protection card is available for the entire game.</li>
+            <li>Limit: A player can only have one Protection card.</li>
+        </ul>
+        <h4>Trap Cards</h4>
+        <ul>
+            <li>When a player lands on a Trap Space, they must draw a Trap card and apply its effect.</li>
+            <li>These cards apply a negative effect to one or more players.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>End of the Game</h2>
+        <p>The game ends when a player arrives at the Center Space. At this moment, the player must scan the QR code
+            located behind the padlock using the QR Scan function in the add-on. The game leaves the surprise for you!
+        </p>
     </div>
 </body>
 
