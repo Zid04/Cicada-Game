@@ -7,12 +7,14 @@ html, body {
   width: 100%;
   height: 100%;
   background: linear-gradient(
-    135deg,
-    #091839 0%,
-    #ea01d9 20%,
-    #143d7b 40%,
-    #23b8c1 70%,
-    #ea01d9 100%
+    to right,
+    #121212 0%,       /* noir profond */
+    #1a1a1a 15%,      /* gris foncé */
+    #332233 30%,      /* très léger rose foncé */
+    #662244 45%,      /* rose foncé */
+    #1a1a1a 60%,      /* gris foncé */
+    #332233 75%,      /* léger rose foncé */
+    #121212 100%      /* noir profond */
   );
   background-attachment: fixed;
   font-family: "poppins", sans-serif;
