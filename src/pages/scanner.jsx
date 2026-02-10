@@ -117,7 +117,7 @@ export default function ScannerPage() {
   }, [winner]);
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center p-5">
+    <div className="min-h-screen text-white flex flex-col items-center p-5">
       <h1 className="text-3xl text-pink-400 mb-5">CICADA-3302 Scanner</h1>
 
       {!winner && (
@@ -150,7 +150,7 @@ export default function ScannerPage() {
           </div>
           
           <button
-            className="mt-4 px-4 py-2 bg-gray-700 text-white font-bold rounded hover:bg-gray-600"
+            className="mt-4 px-4 py-2 bg-pink-700 text-white font-bold rounded hover:bg-pink-600"
             onClick={() => navigate("/")}
           >
             ← Back to Home
@@ -159,7 +159,7 @@ export default function ScannerPage() {
       )}
 
       {winner && (
-        <div className="mt-5 max-w-lg bg-gray-800 p-5 rounded-lg flex flex-col items-center gap-3 text-center">
+        <div className="mt-5 max-w-lg bg-pink-800 p-5 rounded-lg flex flex-col items-center gap-3 text-center">
           <h2 className="text-2xl text-pink-400">{winner.title}</h2>
           {winner.image && <img src={winner.image} alt={winner.title} className="w-64 h-64 object-cover rounded-lg" />}
           {winner.content && !winner.image && (
@@ -184,7 +184,7 @@ export default function ScannerPage() {
           </ul>
           <div className="mt-4 flex gap-3">
             <button
-              className="px-4 py-2 bg-pink-400 text-gray-900 font-bold rounded hover:bg-pink-500"
+              className="px-4 py-2 bg-pink-400 text-pink-900 font-bold rounded hover:bg-pink-500"
               onClick={() => setWinner(null)}
             >
               Scan Again
@@ -205,7 +205,7 @@ export default function ScannerPage() {
             <div className="flex justify-between items-center mb-3">
               <h2 className="text-xl font-bold text-red-400">Error</h2>
               <button
-                className="text-gray-400 hover:text-white text-2xl"
+                className="text-pink-400 hover:text-white text-2xl"
                 onClick={() => setError(null)}
               >
                 ✕
