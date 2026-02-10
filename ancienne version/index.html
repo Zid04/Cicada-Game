@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CICADA-3302 GAME</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <nav class="menu">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="pages-winner/regles.html">Rule of Game</a></li>
+            <li><a href="pages-winner/lexique.html">Glossary</a></li>
+        </ul>
+    </nav>
+    <h1 class="title">Welcome in CICADA-3302 GAME</h1>
+    <p> <span class="tooltip">Don't forget
+            <span class="tooltiptext">Nobody is fully secure, so remain vigilant at all time and take appropriate action
+                for more information <a href="https://www.cybermalveillance.gouv.fr/">click here!</a>
+            </span>
+        </span></p>
+    <p id="scan-text">scan or write your winning code and enjoy</p>
+    <div id="reader">
+        <video id="preview"></video>
+
+        <div id="result"></div>
+        <div id="laser"></div>
+    </div>
+    <div id="manual-input">
+        <input type="text" id="code-input" placeholder="Enter your code here">
+        <button id="submit-code">submit</button>
+    </div>
+    <!-- module import removed to avoid conflicts with global loader and to ensure single scanner instance -->
+    <script>
+        const pages = {
+            "WINNER1": "{$BASE}/pages-winner/winner1.html",
+            "WINNER2": "{$BASE}/pages-winner/winner2.html",
+            "WINNER3": "{$BASE}/pages-winner/winner3.html",
+            "WINNER4": "{$BASE}/pages-winner/winner4.html",
+            "WINNER5": "{$BASE}/pages-winner/winner5.html",
+            "WINNER6": "{$BASE}/pages-winner/winner6.html",
+            "WINNER7": "{$BASE}/pages-winner/winner7.html",
+            "WINNER8": "{$BASE}/pages-winner/winner8.html",
+            "WINNER9": "{$BASE}/pages-winner/winner9.html",
+            "WINNER10": "{$BASE}/pages-winner/winner10.html",
+            "WINNER11": "{$BASE}/pages-winner/winner11.html",
+            "WINNER12": "{$BASE}/pages-winner/winner12.html",
+            "WINNER13": "{$BASE}/pages-winner/winner13.html",
+            "WINNER14": "{$BASE}/pages-winner/winner14.html",
+            "WINNER15": "{$BASE}/pages-winner/winner15.html"
+        };
+
+        function redirectToPage(raw) {
+            if (!raw) {
+                alert("invalid code. Please try again.");
+                return;
+            }
+            let code = raw.trim().toUpperCase();
+            console.log("code recu:", code);
+            const BASE = window.location.origin;
+            if (code.startsWith("HTTP://") || code.startsWith("HTTPS://")) {
+                window.location.href = raw.trim();
+                return;
+            }
+            code = code
+            if (pages[code]) {
+                window.location.href = pages[code];
+            }
+            const cleaned = code.replace(/[^A-Z0-9]/gi, '');
+            if (pages[cleaned]) {
+                window.location.href = pages[cleaned];
+                return;
+            }
+            alert("Invalid code. Please try again.");
+        }
+        // Bouton submit - rediriger avec le code entré
+        document.getElementById("submit-code").addEventListener("click", function () {
+            const code = document.getElementById("code-input").value.trim();
+            if (code) {
+                redirectToPage(code);
+            } else {
+                alert("Please enter a code.");
+            }
+        });
+
+        // Permettre Entrée pour soumettre
+        document.getElementById("code-input").addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+                document.getElementById("submit-code").click();
+            }
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+    <script type="module">
+        import QrScannerDefault from './qr-scanner.min.js';
+        window.QrScanner = QrScannerDefault;
+    </script>
+    <script>
+        window.addEventListener('load', async function () {
+            const video = document.getElementById('preview');
+            if (!video) {
+                console.error('Video element not found');
+                return;
+            }
+
+            let scannerActive = false;
+            let currentStream = null;
+
+            // Stop any active streams
+            function stopStream() {
+                if (currentStream) {
+                    currentStream.getTracks().forEach(track => track.stop());
+                    currentStream = null;
+                    video.srcObject = null;
+                }
+                scannerActive = false;
+            }
+
+            // Use jsQR (lightweight, works great on mobile)
+            async function initJsQRScanner() {
+                try {
+                    if (typeof jsQR === 'undefined') {
+                        console.warn('jsQR not loaded');
+                        return false;
+                    }
+
+                    // Force rear camera (environment) with multiple fallback strategies
+                    let stream;
+                    try {
+                        // First attempt: Force rear camera with exact constraint
+                        stream = await navigator.mediaDevices.getUserMedia({
+                            video: {
+                                facingMode: { exact: 'environment' },
+                                width: { ideal: 1280 },
+                                height: { ideal: 720 }
+                            }
+                        });
+                        console.log('Rear camera (exact) obtained');
+                    } catch (e) {
+                        try {
+                            // Second attempt: Rear camera without exact constraint
+                            stream = await navigator.mediaDevices.getUserMedia({
+                                video: {
+                                    facingMode: 'environment',
+                                    width: { ideal: 1280 },
+                                    height: { ideal: 720 }
+                                }
+                            });
+                            console.log('Rear camera (preferred) obtained');
+                        } catch (e2) {
+                            // Fallback: Any available camera
+                            console.warn('Rear camera not available, using any camera');
+                            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                        }
+                    }
+
+                    currentStream = stream;
+                    console.log('Camera stream obtained');
+                    video.srcObject = stream;
+                    video.setAttribute('playsinline', 'true');
+                    video.setAttribute('webkit-playsinline', 'true');
+                    await video.play();
+
+                    scannerActive = true;
+                    console.log('jsQR scanner started');
+
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+                    const scanFrame = () => {
+                        if (!scannerActive) return;
+
+                        if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                            canvas.width = video.videoWidth;
+                            canvas.height = video.videoHeight;
+                            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                            try {
+                                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                                const result = jsQR(imageData.data, imageData.width, imageData.height);
+                                if (result) {
+                                    console.log('QR detected:', result.data);
+                                    scannerActive = false;
+                                    stopStream();
+                                    redirectToPage(result.data);
+                                    stopStream();  // Arrête le flux
+                                    setTimeout(() => {
+                                        // Redémarrez le scanner après un délai
+                                        scannerActive = true;
+                                        startScanner(); // Fonction qui démarre le scanner à n
+                                    }, 1000); // Délai de 1 seconde avant de redémarrer       
+                                    return;
+                                } else { console.debug('No QR code detected in this frame.'); }
+                            } catch (e) {
+                                console.debug('jsQR scan error:', e);
+                            }
+                        }
+                        requestAnimationFrame(scanFrame);
+                    };
+
+                    scanFrame();
+                    return true;
+                } catch (error) {
+                    console.error('jsQR scanner error:', error);
+                    stopStream();
+                    return false;
+                }
+            }
+            function startScanner() {
+                // Essayer de redémarrer le scanner
+                if (!scannerActive) {
+                    initJsQRScanner(); // Vous pouvez utiliser initQrScanner() si c'est votre choix
+                }
+            }
+
+            // Fallback to qr-scanner
+            async function initQrScanner() {
+                try {
+                    if (typeof QrScanner === 'undefined') {
+                        console.error('QrScanner not available');
+                        return false;
+                    }
+
+                    console.log('Initializing qr-scanner...');
+
+                    // Stop any previous stream first
+                    stopStream();
+
+                    // Give the system time to release the device
+                    await new Promise(resolve => setTimeout(resolve, 500));
+
+                    // Create new QrScanner instance
+                    window.scanner = new QrScanner(video, result => {
+                        const decoded = (typeof result === 'object' && result.data) ? result.data : result;
+                        console.log('QR detected (qr-scanner):', decoded);
+                        stopStream();
+                        redirectToPage(decoded);
+                    }, {
+                        onDecodeError: () => { },
+                        highlightScanRegion: false,
+                        highlightCodeOutline: false,
+                        maxScansPerSecond: 10,
+                        preferredCamera: 'environment'
+                    });
+
+                    await window.scanner.start();
+                    console.log('QrScanner started successfully');
+                    return true;
+                } catch (error) {
+                    console.error('QrScanner initialization failed:', error);
+                    stopStream();
+                    return false;
+                }
+            }
+
+            // Diagnostic info
+            console.log('Page protocol:', window.location.protocol);
+            console.log('MediaDevices supported:', !!navigator.mediaDevices);
+            console.log('getUserMedia supported:', !!navigator.mediaDevices?.getUserMedia);
+
+            // Try jsQR first, fallback to qr-scanner
+            console.log('Starting jsQR scanner...');
+            const jsqrSuccess = await initJsQRScanner();
+            if (!jsqrSuccess) {
+                console.log('jsQR failed, trying qr-scanner...');
+                const qrScannerSuccess = await initQrScanner();
+                if (!qrScannerSuccess) {
+                    console.error('CRITICAL: No QR scanner available on this device/browser');
+                    const errorMsg = 'Camera access failed. Please:\n1. Allow camera access\n2. Use HTTPS\n3. Try a different browser';
+                    alert(errorMsg);
+                    document.getElementById('scan-text').innerText = '❌ Camera not accessible - use manual code entry below';
+                    document.getElementById('reader').style.opacity = '0.5';
+                }
+            }
+        });
+    </script>
+
+</body>
+
+</html>
