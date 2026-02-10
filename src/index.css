@@ -1,0 +1,24 @@
+
+@import "tailwindcss";
+
+:root {
+ background: linear-gradient(
+  to right,
+  #121212 0%,       
+  #1a1a1a 15%,      
+  #332233 30%,      
+  #662244 45%,     
+  #1a1a1a 60%,      
+  #332233 75%,     
+  #121212 100%      
+);
+@keyframes scan-laser {
+  0% { top: 0%; }
+  50% { top: 90%; }
+  100% { top: 0%; }
+}
+
+.scan-laser {
+  animation: scan-laser 5s infinite linear;
+}
+}
