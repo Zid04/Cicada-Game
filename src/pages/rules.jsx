@@ -1,4 +1,4 @@
-import Section from "../components/ui/Section";
+import Section from "../components/ui/section";
 
 const RULES = () => {
   return (
