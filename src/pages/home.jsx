@@ -2,6 +2,7 @@ import { useState } from "react";
 import WHEEL from "../components/layout/wheel";
 import QUESTION from "../components/layout/question";
 import ADVICE from "../components/layout/advice";
+import { addToHistory } from "../data/history"; 
 import { useNavigate } from "react-router-dom";
 
 
@@ -21,6 +22,12 @@ export default function HomePage() {
   const handleQuizEnd = (quizScore) => {
     setScore(quizScore);
     setShowQuiz(false);
+     addToHistory({
+    theme: selectedTheme.label,
+    score: quizScore,
+    total: selectedTheme.questions.length, // si tu as le total
+  });
+
     // show advice only if player reached threshold (>=8)
     if (typeof quizScore === 'number' && quizScore >= 8) {
       setShowAdvice(true);
@@ -60,6 +67,7 @@ export default function HomePage() {
 
       {showAdvice && <ADVICE theme={selectedTheme} onClose={handleCloseAdvice} />}
 
+     
       {score > 0 && !showQuiz && !showAdvice && (
         <div className="mt-5 text-xl text-pink-400">your score : {score}</div>
       )}
