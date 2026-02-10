@@ -2,7 +2,7 @@ import { useState } from "react";
 import WHEEL from "../components/layout/wheel";
 import QUESTION from "../components/layout/question";
 import ADVICE from "../components/layout/advice";
-import { addToHistory } from "../data/history"; 
+import { addToHistory } from "../utils/history"; 
 import { useNavigate } from "react-router-dom";
 
 
